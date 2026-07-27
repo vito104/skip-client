@@ -1,0 +1,115 @@
+networks:
+  left-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+  transit-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+  right-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+
+services:
+  # ==========================================
+  # 1. SKIP1 SERVER
+  # ==========================================
+  skip1:
+    build: ./skip-server
+    image: skip-server
+    hostname: skip1.cml.lab
+    container_name: skip1
+    sysctls:
+      - net.ipv4.ip_forward=1
+    cap_add:
+      - NET_ADMIN
+    networks:
+      left-net:
+        ipv4_address: 192.168.1.254
+      transit-net:
+        ipv4_address: 10.0.0.10
+    ports:
+      - "443:443"
+      - "8443:8443"
+    volumes:
+      - ./src/config/skip1/config:/data/appdata/config
+      - ./src/config/skip1/certs:/data/appdata/certs
+      - ./src/config/skip1/secrets:/data/appdata/secrets
+    environment:
+      - KEYSTORE_MASTER_KEY=33b49295caba29a2efcfbb7c2b28eb3d76f45a34b8a14a61ac7f99c8a474c653
+    command: >
+      sh -c "ip route add 192.168.2.0/24 via 10.0.0.20 || true;
+             python3 /app/skip_server.py --host 0.0.0.0 --config /data/appdata/config/skip.yaml"
+
+  # ==========================================
+  # 2. CLIENT 1
+  # ==========================================
+  client1:
+    build: ./src
+    hostname: client1
+    container_name: client1
+    networks:
+      left-net:
+        ipv4_address: 192.168.1.20
+    volumes:
+      - ./src:/app
+      - ./src/config/client1:/app/config:ro
+    depends_on:
+      - skip1
+    cap_add:
+      - NET_ADMIN
+    command: sh -c "route del default || true; route add default gw 192.168.1.254 || true; sleep infinity"
+
+  # ==========================================
+  # 3. SKIP2 SERVER
+  # ==========================================
+  skip2:
+    build: ./skip-server
+    image: skip-server
+    hostname: skip2.cml.lab
+    container_name: skip2
+    sysctls:
+      - net.ipv4.ip_forward=1
+    cap_add:
+      - NET_ADMIN
+    networks:
+      right-net:
+        ipv4_address: 192.168.2.254
+      transit-net:
+        ipv4_address: 10.0.0.20
+    ports:
+      - "4443:443"
+      - "8444:8443"
+    volumes:
+      - ./src/config/skip2/config:/data/appdata/config
+      - ./src/config/skip2/certs:/data/appdata/certs
+      - ./src/config/skip2/secrets:/data/appdata/secrets
+    environment:
+      - KEYSTORE_MASTER_KEY=01cc698e49983231868834b15da5219e861427ea31c44609295ae0e5bd2033ec
+    command: >
+      sh -c "ip route add 192.168.1.0/24 via 10.0.0.10 || true;
+             python3 /app/skip_server.py --host 0.0.0.0 --config /data/appdata/config/skip.yaml"
+
+  # ==========================================
+  # 4. CLIENT 2
+  # ==========================================
+  client2:
+    build: ./src
+    hostname: client2
+    container_name: client2
+    networks:
+      right-net:
+        ipv4_address: 192.168.2.20
+    volumes:
+      - ./src:/app
+      - ./src/config/client2:/app/config:ro
+    depends_on:
+      - skip2
+    cap_add:
+      - NET_ADMIN
+    command: sh -c "route del default || true; route add default gw 192.168.2.254 || true; sleep infinity"
