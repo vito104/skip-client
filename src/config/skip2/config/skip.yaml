@@ -1,0 +1,18 @@
+localSystemID: "skip2.cml.lab"
+remoteSystems:
+  - id: "skip1.cml.lab"
+    ip: "skip1"
+    pubkey_path: "/data/appdata/secrets/skip1_kem_pub.pem"
+algorithm: "PRF"
+default_key_size_bits: 256
+default_entropy_bits: 256
+keystore_path: "/data/appdata/secrets/keystore.db"
+kem_pub_key_path: "/data/appdata/secrets/kem_pub.pem"
+kem_priv_key_path: "/data/appdata/secrets/kem_priv.pem"
+use_psk: true
+psk_file: "/data/appdata/secrets/psk.txt"
+psk_identity: "skip2.cml.lab"
+use_ssl: false
+certfile: "/data/appdata/certs/skip2.pem.crt"
+keyfile: "/data/appdata/certs/skip2_key.pem"
+cafile: "/data/appdata/certs/ca/ca.pem"
