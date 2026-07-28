@@ -19,13 +19,13 @@ fi
 
 chmod +x skip-server/scripts/*.sh
 sed -i 's/\r$//' skip-server/scripts/*.sh 2>/dev/null || true
+sed -i 's/liboqs-python==.*/liboqs-python==0.16.0/g' skip-server/requirements.txt
 
 echo "Generating keys and certs using custom OpenSSL (neliba/openssl:3.6.3)..."
 mkdir -p src/config/skip1/config src/config/skip1/certs/ca src/config/skip1/secrets
 mkdir -p src/config/skip2/config src/config/skip2/certs/ca src/config/skip2/secrets
 mkdir -p src/config/client1
 mkdir -p src/config/client2
-mkdir -p tmp_gen/ca
 
 docker run --rm -v "$(pwd):/work" -w /work neliba/openssl:3.6.3 bash -c "
   cd skip-server
@@ -69,4 +69,4 @@ cp tmp_gen/psk_skip2.txt src/config/client2/psk.txt
 rm -rf tmp_gen
 
 echo "Building & Running Docker..."
-docker compose up --build
+docker compose up -d --build
