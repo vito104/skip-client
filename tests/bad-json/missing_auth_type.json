@@ -1,0 +1,6 @@
+{
+  "host": "skip1.cml.lab",
+  "port": 443,
+  "psk-file": "config/psk.txt",
+  "server_id": "skip1.cml.lab"
+}
