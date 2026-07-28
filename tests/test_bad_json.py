@@ -40,7 +40,7 @@ def test_missing_port():
     bad_json_file = "tests/bad-json/missing_port.json"
 
     result = subprocess.run(
-        ["python3", "src/client.py", "--server", bad_json_file], 
+        ["python3", "src/client.py", "--peer", bad_json_file], 
         capture_output=True, 
         text=True
     )
