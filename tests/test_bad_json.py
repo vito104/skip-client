@@ -15,7 +15,7 @@ def test_missing_auth_type():
     assert "Traceback (most recent call last)" not in result.stderr, \
         f"Client crashed due to unhandled exception:\n{result.stderr}"
         
-    assert "Error: Missing required field" in result.stderr, \
+    assert "Error: Some fields are missing in server config" in result.stderr, \
         f"Expected specific error message in stderr, got:\n{result.stderr}"
 
 
@@ -33,5 +33,5 @@ def test_not_a_json():
     assert "Traceback (most recent call last)" not in result.stderr, \
         f"Client crashed due to unhandled exception:\n{result.stderr}"
         
-    assert "Error: Invalid JSON format" in result.stderr, \
+    assert "Error: Invalid json format" in result.stderr, \
         f"Expected specific error message in stderr, got:\n{result.stderr}"
