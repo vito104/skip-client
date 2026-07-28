@@ -15,11 +15,21 @@ def load_psk(file):
 
 
 def load_peer(peer):
-    peer_config = load_config(peer)
-    peer_ip = peer_config["host"]
-    peer_port = peer_config["port"]
-    peer_server = peer_config["remote_server_id"]
-    return peer_ip, peer_port, peer_server
+    try:
+        peer_config = load_config(peer)
+        peer_ip = peer_config["host"]
+        peer_port = peer_config["port"]
+        peer_server = peer_config["remote_server_id"]
+        return peer_ip, peer_port, peer_server
+    except FileNotFoundError:
+        print("Error: File not found", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print("Error: Invalid json format", file=sys.stderr)  
+        sys.exit(1)
+    except KeyError:
+        print("Error: Some fields are missing in peer config", file=sys.stderr)
+        sys.exit(1)
 
 def load_server(server):
     try:

@@ -49,3 +49,6 @@ def test_missing_port():
     
     assert "Traceback (most recent call last)" not in result.stderr, \
         f"Client crashed due to unhandled exception:\n{result.stderr}"
+
+    assert "Error: Some fields are missing in peer config" in result.stderr, \
+        f"Expected specific error message in stderr, got:\n{result.stderr}"
