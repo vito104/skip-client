@@ -24,7 +24,11 @@ def load_server(server):
     server_config = load_config(server)
     server_ip = server_config["host"]
     server_port = server_config["port"]
-    auth_type = server_config["auth_type"]
+    try:
+        auth_type = server_config["auth_type"]
+    except KeyError:
+        print("Error: 'auth_type' is missing from server config")
+        exit(1)
     server_id = server_config["server_id"]
     
     ca_file = None
