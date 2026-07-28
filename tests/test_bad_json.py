@@ -1,5 +1,4 @@
 import pytest
-import os
 import subprocess
 
 def test_missing_auth_type():
@@ -11,7 +10,28 @@ def test_missing_auth_type():
         text=True
     )
     
-    assert "Traceback (most recent call last)" not in result.stderr, \
-        f"Client crashed due unhandled exception (Traceback):\n{result.stderr}"
+    assert result.returncode != 0, f"Expected non-zero exit code, got {result.returncode}"
     
-    return
+    assert "Traceback (most recent call last)" not in result.stderr, \
+        f"Client crashed due to unhandled exception:\n{result.stderr}"
+        
+    assert "Error: Missing required field" in result.stderr, \
+        f"Expected specific error message in stderr, got:\n{result.stderr}"
+
+
+def test_not_a_json():
+    bad_json_file = "tests/bad-json/not_a_json.json"
+
+    result = subprocess.run(
+        ["python3", "src/client.py", "--server", bad_json_file], 
+        capture_output=True, 
+        text=True
+    )
+
+    assert result.returncode != 0, f"Expected non-zero exit code, got {result.returncode}"
+    
+    assert "Traceback (most recent call last)" not in result.stderr, \
+        f"Client crashed due to unhandled exception:\n{result.stderr}"
+        
+    assert "Error: Invalid JSON format" in result.stderr, \
+        f"Expected specific error message in stderr, got:\n{result.stderr}"

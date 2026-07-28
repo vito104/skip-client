@@ -1,4 +1,5 @@
 import json
+import sys
 
 
 def load_config(path):
@@ -21,16 +22,28 @@ def load_peer(peer):
     return peer_ip, peer_port, peer_server
 
 def load_server(server):
-    server_config = load_config(server)
-    server_ip = server_config["host"]
-    server_port = server_config["port"]
     try:
+        server_config = load_config(server)
+
+        server_ip = server_config["host"]
+        server_port = server_config["port"]
         auth_type = server_config["auth_type"]
+        server_id = server_config["server_id"]    
+        return server_ip, server_port, auth_type, server_id
+        
+    except  FileNotFoundError:
+        print("Error: File not found", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print("Error: Invalid json format", file=sys.stderr)
+        sys.exit(1)
+
     except KeyError:
-        print("Error: 'auth_type' is missing from server config")
-        exit(1)
-    server_id = server_config["server_id"]
-    
+        print("Error: Some fields are missing in server config", file=sys.stderr)
+        sys.exit(1)
+
+
+
     ca_file = None
     cert_file = None
     key_file = None
