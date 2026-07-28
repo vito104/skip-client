@@ -29,7 +29,6 @@ def load_server(server):
         server_port = server_config["port"]
         auth_type = server_config["auth_type"]
         server_id = server_config["server_id"]    
-        return server_ip, server_port, auth_type, server_id
         
     except  FileNotFoundError:
         print("Error: File not found", file=sys.stderr)

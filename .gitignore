@@ -3,6 +3,15 @@ venv/
 env/
 
 __pycache__/
+skip-server/
+*.pem
+*.crt
+
+psk.txt
+secrets/
+certs/
+
+
 *.pyc
 *.pyo
 *.pyd

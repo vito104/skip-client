@@ -49,13 +49,12 @@ def fetch_key_by_id(server_ip, peer_server, server_id, port, identity, psk, ca_f
     if start != -1 and end != 0:
         clean_json = body[start:end]
         data = json.loads(clean_json)
-        print("DEBUG SERVER RESPONSE:", data)
     else:
-        raise ValueError(f"Nepodařilo se najít platný JSON v těle odpovědi: {body}")
+        raise ValueError(f"Cannot find valid JSON in response body: {body}")
 
     # Pokud server klíč nevrátil, vypíšeme chybu a ukončíme program
     if "key" not in data:
-        print(f"\n[!] CHYBA: Server nevratio klíč! Odpověď serveru: {data}")
+        print(f"\n[!] ERROR: Server returned invalid response: {data}")
         sys.exit(1)
 
     key = bytes.fromhex(data["key"])
