@@ -35,20 +35,7 @@ def main():
     else:
         print("Slave mode")
         key_id, remote_server_id, addr = listen_for_data(host='0.0.0.0', port=5000)
-# OPRAVENÉ VOLÁNÍ:
-        key = fetch_key_by_id(
-            server_ip,            # server_ip
-            remote_server_id,     # peer_server (použijeme remote_server_id)
-            server_id,            # server_id (načteno z load_server)
-            server_port,          # port
-            identity,             # identity
-            psk,                  # psk
-            ca_file,              # ca_file
-            cert_file,            # cert_file
-            key_file,             # key_file
-            key_id,               # key_id (přijatý ze sítě)
-            remote_server_id      # remote_server_id
-        )        
+        key = fetch_key_by_id(server_ip, remote_server_id, server_id, server_port, identity, psk, ca_file, cert_file, key_file, key_id, remote_server_id)        
         if args.com is not None:
             print(" <- Ping")
             send_message(addr[0], 5001, key, "Ping")
