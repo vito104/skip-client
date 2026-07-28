@@ -25,7 +25,6 @@ def request_key(server_ip, peer_server, server_id, port, identity, psk, ca_file,
     resp = request(tls_sock, "GET", "/key", server_id, remote_server_id=peer_server)
     header, body = resp.split("\r\n\r\n", 1)
     
-    print(body)
     start = body.find('{')
     end = body.rfind('}') + 1
     if start != -1 and end != 0:
@@ -36,6 +35,7 @@ def request_key(server_ip, peer_server, server_id, port, identity, psk, ca_file,
 
     key_id = data["keyId"]
     key = bytes.fromhex(data["key"])
+    print(key)
     return key_id, key
 
 

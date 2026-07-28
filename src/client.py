@@ -26,8 +26,9 @@ def main():
         send_key_id(peer_ip, peer_port, key_id, server_id)
         if args.com is not None:
                 msg = receive_message(5001, key)
+                print(f"<- {msg}")
                 if msg == "Ping":
-                    print("Ping")
+                    print("-> Pong")
                     send_message(peer_ip, 5001, key, f"Pong")
 
 
